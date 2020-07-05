@@ -1,9 +1,10 @@
 module CodeGen.JS where
 
 import Prelude
+
 import CodeGen.JS.AST as J
 import CodeGen.JS.Common (identToJS, properToJS, psstringToJS)
-import CoreFn.Ident (Ident) as CF
+import CoreFn.Ident (Ident(..)) as CF
 import CoreFn.Literal (Literal(..)) as CF
 import CoreFn.Names (ModuleName(..), ProperName(..), Qualified(..)) as CF
 import CoreImp.AST (BinOp(..), Expr(..), Stat(..), UnOp(..)) as CI
@@ -43,8 +44,11 @@ impToJS mod =
       [ J.VarAssign foreignIdent (J.Require (joinWith "/" [ ".", foreignIdent <> ".js" ])) ]
 
   foreignBinds =
-    map (\f -> J.VarAssign (identToJS f) (J.Accessor (identToJS f) (J.Var foreignIdent)))
+    map (\f -> J.VarAssign (identToJS f) (J.PropertyIndexer (foreignIdentToJS f) (J.Var foreignIdent)))
       mod.moduleForeigns
+    where
+      foreignIdentToJS (CF.Ident s) = s
+      foreignIdentToJS i = identToJS i
 
   qiToExpr :: CF.Qualified CF.Ident -> J.Expr
   qiToExpr (CF.Qualified (Just mn) ident)

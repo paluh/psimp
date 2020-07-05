@@ -20,6 +20,7 @@ data Expr
   | Literal Lit
   | Accessor String Expr
   | Indexer Int Expr
+  | PropertyIndexer String Expr
   | App Expr Expr
   | Function String (Array Stat)
   | Binary BinOp Expr Expr
@@ -68,6 +69,7 @@ instance showExpr :: Show Expr where
   show (Literal lit) = showCtor "Literal" [ show lit ]
   show (Accessor a x) = showCtor "Accessor" [ show a, show x ]
   show (Indexer i x) = showCtor "Indexer" [ show i, show x ]
+  show (PropertyIndexer p x) = showCtor "PropertyIndexer" [ show p, show x ]
   show (App f x) = showCtor "App" [ show f, show x ]
   show (Function arg stats) = showCtor "Function" [ show arg, show stats ]
   show (Binary op x y) = showCtor "Binary" [ show op, show x, show y ]
